@@ -98,5 +98,25 @@ namespace ShelterApi.Controllers
                 return BadRequest(exception.Message);
             }
         }
+
+        [HttpDelete("/animals/deleteAnimal")]
+        public async Task<IActionResult> DeleteAnimal([FromQuery] Guid id)
+        {
+            try
+            {
+                var animal = await _context.Animals.FindAsync(id);
+                if (animal is not null)
+                {
+                    _context.Animals.Remove(animal);
+                    await _context.SaveChangesAsync();
+                    return StatusCode(200, new { message = "Sikeres törlés!", result = animal });
+                }
+                return StatusCode(404, new { message = "Sikertelen törlés!", result = animal });
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
     }
 }
